@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: patient-service-db
+    restart: always
+    environment:
+      POSTGRES_DB: patientdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - internal
+
+  app:
+    image: patient-service
+    container_name: patient-service
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/patientdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    networks:
+      - internal
+
+networks:
+  internal:
